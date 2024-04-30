@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import {comments} from "../data"
 
 export async function GET(
@@ -5,6 +6,9 @@ export async function GET(
     {params}:{params:{id:string}}
 )
     {
+        if(parseInt(params.id) >comments.length){
+            redirect("/comments")
+        }
     const comment = comments.find(
         (comment)=>comment.id === parseInt(params.id)
     );
@@ -21,4 +25,15 @@ export async function PATCH(request:Request,{params}:{params:{id:string}}
     );
     comments[index].text = text;
     return  Response.json(comments[index]);
+}
+
+
+export async function DELETE(request:Request,{params}:{params:{id:string}}) {
+    const index = comments.findIndex(
+        (comment)=>comment.id===parseInt(params.id)
+    );
+    const deletecomment = comments[index]
+    comments.splice(index,1)
+
+    return Response.json(deletecomment) 
 }
